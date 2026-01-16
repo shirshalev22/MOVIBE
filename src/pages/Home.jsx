@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore"; 
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore"; 
 import { db } from "../config/firebase";
 
 import useMovies from "../hooks/useMovies";
@@ -27,8 +27,14 @@ export default function Home() {
   const [movieMeta, setMovieMeta] = useState({});
   const { handleVote } = useVotes(user, setMovieMeta);
 
-  const genreList = ["Action", "Adventure", "Animation", "Biography", "Comedy", "Crime", "Drama", "Family",
-                     "Fantasy", "History", "Horror", "Musical", "Mystery", "Romance", "Sci-Fi", "Thriller", "War", "Western"];
+  const [dbGenreMovies, setDbGenreMovies] = useState([]);
+  const [loadingDB, setLoadingDB] = useState(false);
+
+  const genreList = useMemo(() => ["Action", "Adventure", "Animation", "Biography", "Comedy", "Crime", "Drama", "Family",
+                     "Fantasy", "History", "Horror", "Musical", "Mystery", "Romance", "Sci-Fi", "Thriller", "War", "Western"], []);
+
+  // משיכת המפתח מה-env
+  const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
 
   // ====== סנכרון URL ======
   useEffect(() => {
@@ -47,16 +53,58 @@ export default function Home() {
     setSearchParams(newParams);
   };
 
-  // ====== לוגיקת סינון (useMemo למניעת לופים) ======
+  // ====== שליפת סרטים מהמסד לפי ז'אנר (כשאין חיפוש פעיל) ======
+  const genreQueryKey = selectedGenres.join(","); // חילוץ משתנה סטטי כדי ש-ESLint לא יתלונן
+
+  useEffect(() => {
+    const fetchFromDB = async () => {
+      if (selectedGenres.length === 0 || search) {
+        setDbGenreMovies([]);
+        return;
+      }
+
+      setLoadingDB(true);
+      try {
+        const q = query(
+          collection(db, "movies"), 
+          where("genres", "array-contains-any", selectedGenres)
+        );
+        
+        const snap = await getDocs(q);
+        const ids = snap.docs.map(doc => doc.id);
+
+        if (ids.length === 0) {
+          setDbGenreMovies([]);
+          return;
+        }
+
+        const fullData = await Promise.all(ids.map(async (id) => {
+          const res = await fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&i=${id}`);
+          return res.json();
+        }));
+
+        setDbGenreMovies(fullData.filter(m => m.Response !== "False"));
+      } catch (err) {
+        console.error("Error fetching movies by genre:", err);
+      } finally {
+        setLoadingDB(false);
+      }
+    };
+
+    fetchFromDB();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [genreQueryKey, search, API_KEY]); 
+
+  // ====== לוגיקת סינון ======
   const filteredMovies = useMemo(() => {
-    if (!rawMovies || rawMovies.length === 0) return [];
-    let result = [...rawMovies].filter(m => {
+    const baseMovies = (selectedGenres.length > 0 && !search) ? dbGenreMovies : rawMovies;
+    if (!baseMovies || baseMovies.length === 0) return [];
+
+    let result = [...baseMovies].filter(m => {
       const y = parseInt(m.Year);
       return y >= yearMin && y <= yearMax;
     });
-    if (selectedGenres.length > 0) {
-      result = result.filter(m => movieMeta[m.imdbID]?.genres?.some(g => selectedGenres.includes(g)));
-    }
+
     if (likesSort !== "none") {
       result.sort((a, b) => {
         const likesA = movieMeta[a.imdbID]?.likes || 0;
@@ -65,24 +113,28 @@ export default function Home() {
       });
     }
     return result;
-  }, [rawMovies, yearMin, yearMax, selectedGenres, likesSort, movieMeta]);
+  }, [rawMovies, dbGenreMovies, search, selectedGenres.length, yearMin, yearMax, likesSort, movieMeta]);
 
-  // ====== טעינת נתונים מ-FIRESTORE (כולל בדיקת הצבעה אישית) ======
+  // ====== טעינת נתונים מ-FIRESTORE (Metadata) ======
   useEffect(() => {
-    if (!rawMovies.length) return;
+    const moviesToHydrate = (selectedGenres.length > 0 && !search) ? dbGenreMovies : rawMovies;
+    if (!moviesToHydrate.length) return;
+
     const hydrate = async () => {
-      const ids = [...new Set(rawMovies.map(m => m?.imdbID).filter(id => id))];
+      const ids = [...new Set(moviesToHydrate.map(m => m?.imdbID).filter(id => id))];
       const updates = {};
 
       await Promise.all(ids.map(async (id) => {
+        // מונע טעינה מחדש של מה שכבר קיים
+        if (movieMeta[id] && movieMeta[id].myVote !== undefined) return;
+
         const movieSnap = await getDoc(doc(db, "movies", id));
         let myVote = null;
 
-        // בדיקה האם המשתמש הנוכחי הצביע לסרט זה
         if (user) {
           const voteSnap = await getDoc(doc(db, "movies", id, "votes", user.uid));
           if (voteSnap.exists()) {
-            myVote = voteSnap.data().type; // 'like' או 'dislike'
+            myVote = voteSnap.data().type;
           }
         }
 
@@ -92,21 +144,24 @@ export default function Home() {
             likes: data.likes || 0, 
             dislikes: data.dislikes || 0, 
             genres: data.genres || [],
-            myVote: myVote // תואם לשם המשתנה בתוך MovieCard
+            myVote: myVote 
           };
         }
       }));
-      setMovieMeta(prev => ({ ...prev, ...updates }));
+
+      if (Object.keys(updates).length > 0) {
+        setMovieMeta(prev => ({ ...prev, ...updates }));
+      }
     };
     hydrate();
-  }, [rawMovies, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawMovies, dbGenreMovies, user]); 
 
   return (
     <div className="min-vh-100 d-flex flex-column align-items-center">
       <div 
         className={`lucky-tab ${!user ? 'btn btn-secondary disabled-tab' : ''}`} 
         onClick={() => user ? setIsLuckyOpen(true) : alert("Please log in!")}
-        style={!user ? { cursor: 'not-allowed', opacity: 0.65 } : {}}
       >
         <span>SURPRISE ME 🎲</span>
       </div>
@@ -132,6 +187,7 @@ export default function Home() {
       />
 
       <div className="container">
+        {(loadingDB) && <div className="text-center my-3">Loading Genres...</div>}
         <div className="grid-2">
           {filteredMovies.map(movie => (
             <MovieCard 
@@ -145,7 +201,7 @@ export default function Home() {
           ))}
         </div>
 
-        {hasMore && selectedGenres.length === 0 && (
+        {hasMore && selectedGenres.length === 0 && !search && (
           <div className="text-center mt-4 mb-5">
             <button className="btn btn-danger px-5" onClick={loadMore} disabled={loadingMore}>
               {loadingMore ? "Loading..." : "Load More"}

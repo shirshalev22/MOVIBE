@@ -4,7 +4,7 @@ import { db } from '../config/firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
 import L from 'leaflet';
 import useFavorites from '../hooks/useFavorites';
-
+import { useNavigate } from 'react-router-dom';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
@@ -23,6 +23,7 @@ L.Marker.prototype.options.icon = DefaultIcon;
 export default function MapPage() {
   const [cinemas, setCinemas] = useState([]);
   const { user } = useFavorites();
+  const navigate = useNavigate();
 
 
   useEffect(() => {
