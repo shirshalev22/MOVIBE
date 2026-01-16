@@ -20,7 +20,7 @@ L.Marker.prototype.options.icon = DefaultIcon;
  * דף המפה - מציג את כל בתי הקולנוע המוגדרים במערכת.
  * משתמש ב-OpenStreetMap ובנתוני ה-Geopoint מה-Firestore.
  */
-export default function MapPage() {
+export default function Map() {
   const [cinemas, setCinemas] = useState([]);
   const { user } = useFavorites();
   const navigate = useNavigate();
