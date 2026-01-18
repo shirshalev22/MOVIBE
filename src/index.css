@@ -736,9 +736,63 @@ a:hover{ color:var(--border); text-decoration:underline; }
     font-size: 0.75rem !important;
   }
 
-  .info-card, .vod-card {
+  .vod-card {
     width: 95% !important;
     padding: 15px !important;
     margin: 10px auto;
+  }
+  /* --- תיקון דף More Info לנייד --- */
+  .info-card {
+    width: 95% !important;
+    padding: 15px !important;
+    display: flex;
+    flex-direction: column; /* מסדר הכל בטור אחד */
+    align-items: center;
+    top: 50px; /* נותן קצת מרווח מהלמעלה של המסך */
+  }
+
+  .info-title {
+    font-size: 1.6rem !important; /* מקטין את הכותרת הענקית */
+    margin-bottom: 15px !important;
+    line-height: 1.2;
+  }
+
+  .info-content {
+    flex-direction: column !important; /* פוסטר למעלה, טקסט למטה */
+    align-items: center;
+    gap: 15px !important;
+  }
+
+  .info-poster-wrap {
+    flex: 0 0 auto !important;
+    width: 160px !important; /* מקטין את הפוסטר בדף המידע */
+  }
+
+  .info-details {
+    text-align: right; /* שומר על הצמדה לימין בעברית */
+    font-size: 0.95rem !important;
+    width: 100%;
+  }
+
+  .info-details p {
+    margin-bottom: 8px !important;
+  }
+
+  /* תיקון כפתורי ה-X והלב בדף המידע */
+  .info-close {
+    left: 10px !important;
+    top: 10px !important;
+    font-size: 1.8rem !important;
+  }
+
+  .info-fav-btn {
+    right: 10px !important;
+    top: 10px !important;
+  }
+
+  .info-plot {
+    font-size: 0.9rem !important;
+    margin-top: 10px !important;
+    padding-top: 10px !important;
   }
 }
