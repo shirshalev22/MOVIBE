@@ -695,20 +695,23 @@ a:hover{ color:var(--border); text-decoration:underline; }
   }
 
   .header-inner {
-    flex-direction: column !important;
-    gap: 15px !important;
-    padding: 15px 10px !important;
+    flex-direction: row !important; 
+    flex-wrap: wrap !important;    
+    justify-content: flex-start !important; 
+    padding: 8px 12px !important;  
+    gap: 10px !important;
   }
 
   .left-group, .right-group {
-    flex-direction: column !important;
-    gap: 10px !important;
-    width: 100%;
-    text-align: center;
+    flex-direction: row !important; 
+    width: auto !important;       
+    justify-content: flex-start !important;
+    gap: 8px !important;
   }
 
   .brand {
-    font-size: 28px !important;
+    font-size: 22px !important;
+    margin-right: auto;
   }
 
   .nav-auth {
@@ -717,8 +720,10 @@ a:hover{ color:var(--border); text-decoration:underline; }
   }
 
   .lucky-tab {
-    padding: 8px 12px !important;
-    top: 15% !important;
+    top: 120px !important; 
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+    z-index: 999 !important;
   }
   
   .lucky-tab span {
@@ -731,6 +736,9 @@ a:hover{ color:var(--border); text-decoration:underline; }
     margin: 10px auto;
   }
 }
+.nav-list {
+    gap: 15px !important; 
+  }
 
 @media (max-width: 400px) {
   .brand {
