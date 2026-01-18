@@ -145,11 +145,13 @@ a:hover{ color:var(--border); text-decoration:underline; }
   display:flex;
   justify-content:space-between;
   align-items:center;
+  flex-wrap: wrap; 
+  gap: 10px;
 }
 .brand{
   color:var(--border);
   font-weight:800;
-  font-size:35px;
+  font-size: clamp(24px, 5vw, 35px);
   letter-spacing:.5px;
 }
 .brand span{ text-transform:uppercase; }
@@ -160,8 +162,8 @@ a:hover{ color:var(--border); text-decoration:underline; }
 
 .logout-inline{ padding:8px 12px; width:auto; }
 
-.left-group{ display:flex; align-items:center; gap:50px; }
-.right-group{ display:flex; align-items:center; gap:24px; }
+.left-group{ display:flex; align-items:center; gap:15px; }
+.right-group{ display:flex; align-items:center; gap:15px; }
 
 .greeting{ color:var(--text); font-size:20px; }
 .greeting strong{ font-weight:800; }
@@ -424,13 +426,6 @@ a:hover{ color:var(--border); text-decoration:underline; }
   font-size:.85rem;
 }
 
-/* רספונסיביות */
-@media (max-width: 768px){
-  .grid-2{ grid-template-columns: 1fr; }
-  .poster-box{ flex-basis:140px; height:190px; }
-  .movie-card{ min-height:220px; }
-}
-
 /* ===== Internal Comments Section (Floating inside Card) ===== */
 .internal-comments {
   margin-top: 30px;
@@ -608,17 +603,6 @@ a:hover{ color:var(--border); text-decoration:underline; }
   color: #ccc;
 }
 
-@media (max-width: 768px) {
-  .info-content {
-    flex-direction: column;
-    align-items: center;
-  }
-  .info-poster-wrap {
-    flex: 0 0 auto;
-    width: 200px;
-  }
-}
-
 .lucky-tab {
   position: fixed;
   left: 0;
@@ -664,4 +648,29 @@ a:hover{ color:var(--border); text-decoration:underline; }
 
 .close-lucky:hover {
   color: #e50914;
+}
+
+/* --- רספונסיביות לטלפונים (מסכים עד 600 פיקסלים) --- */
+@media (max-width: 600px) {
+  .greeting { 
+    font-size: 16px; 
+  }
+  .left-group { 
+    gap: 10px; 
+  }
+  .header-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+  .actions, .vote-row {
+    justify-content: center;
+  }
+  .lucky-tab {
+    padding: 8px 10px;
+    top: 15%;
+  }
+  .lucky-tab span {
+    font-size: 0.7rem; 
+  }
 }
