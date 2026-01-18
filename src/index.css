@@ -650,27 +650,93 @@ a:hover{ color:var(--border); text-decoration:underline; }
   color: #e50914;
 }
 
-/* --- רספונסיביות לטלפונים (מסכים עד 600 פיקסלים) --- */
-@media (max-width: 600px) {
-  .greeting { 
-    font-size: 16px; 
+/* --- רספונסיביות לטלפונים --- */
+
+@media (max-width: 768px) {
+  .grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 20px;
+    padding: 10px;
   }
-  .left-group { 
-    gap: 10px; 
-  }
-  .header-inner {
-    flex-direction: column;
+
+  .movie-card {
+    flex-direction: column !important; 
+    align-items: center;
     text-align: center;
-    gap: 15px;
+    height: auto !important;
+    min-height: unset !important;
+    padding: 20px !important;
   }
+
+  .poster-box {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: 220px; 
+    height: 320px !important;
+    margin-bottom: 15px;
+  }
+
+  .poster-box img {
+    object-fit: contain !important; 
+  }
+
+  .card-body-eq {
+    width: 100%;
+  }
+
+  .card-body-eq .card-title {
+    white-space: normal !important; 
+    font-size: 1.3rem !important;
+  }
+
   .actions, .vote-row {
-    justify-content: center;
+    justify-content: center !important;
+    margin-top: 15px;
   }
+
+  .header-inner {
+    flex-direction: column !important;
+    gap: 15px !important;
+    padding: 15px 10px !important;
+  }
+
+  .left-group, .right-group {
+    flex-direction: column !important;
+    gap: 10px !important;
+    width: 100%;
+    text-align: center;
+  }
+
+  .brand {
+    font-size: 28px !important;
+  }
+
+  .nav-auth {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
   .lucky-tab {
-    padding: 8px 10px;
-    top: 15%;
+    padding: 8px 12px !important;
+    top: 15% !important;
   }
+  
   .lucky-tab span {
-    font-size: 0.7rem; 
+    font-size: 0.75rem !important;
+  }
+
+  .info-card, .vod-card {
+    width: 95% !important;
+    padding: 20px !important;
+    margin: 10px auto;
+  }
+}
+
+@media (max-width: 400px) {
+  .brand {
+    font-size: 24px !important;
+  }
+  .greeting {
+    font-size: 14px !important;
   }
 }
