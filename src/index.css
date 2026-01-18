@@ -655,7 +655,7 @@ a:hover{ color:var(--border); text-decoration:underline; }
 @media (max-width: 768px) {
   .grid-2 {
     grid-template-columns: 1fr !important;
-    gap: 20px;
+    gap: 15px; /* הקטנתי רווחים בין כרטיסים */
     padding: 10px;
   }
 
@@ -665,15 +665,15 @@ a:hover{ color:var(--border); text-decoration:underline; }
     text-align: center;
     height: auto !important;
     min-height: unset !important;
-    padding: 20px !important;
+    padding: 10px !important; /* הקטנתי מ-20 ל-10 כדי שהכרטיס יהיה פחות ענק */
   }
 
   .poster-box {
     flex: 0 0 auto !important;
     width: 100% !important;
-    max-width: 220px; 
-    height: 320px !important;
-    margin-bottom: 15px;
+    max-width: 150px; /* הקטנתי מ-220 ל-150 - זה יעשה את השינוי הכי גדול */
+    height: 220px !important; /* הקטנתי מ-320 ל-220 */
+    margin-bottom: 10px;
   }
 
   .poster-box img {
@@ -686,14 +686,21 @@ a:hover{ color:var(--border); text-decoration:underline; }
 
   .card-body-eq .card-title {
     white-space: normal !important; 
-    font-size: 1.3rem !important;
+    font-size: 1.1rem !important; /* הקטנתי את גודל הכותרת */
+    margin-bottom: 5px;
+  }
+
+  .movie-year {
+    font-size: 0.85rem !important; /* הקטנתי את גודל השנה */
   }
 
   .actions, .vote-row {
     justify-content: center !important;
-    margin-top: 15px;
+    margin-top: 10px; /* צמצמתי מרווחים */
+    gap: 8px !important;
   }
 
+  /* --- ה-Header שהיה לך נשאר אותו דבר כי אמרת שהוא בסדר --- */
   .header-inner {
     flex-direction: row !important; 
     flex-wrap: wrap !important;    
@@ -732,19 +739,7 @@ a:hover{ color:var(--border); text-decoration:underline; }
 
   .info-card, .vod-card {
     width: 95% !important;
-    padding: 20px !important;
+    padding: 15px !important;
     margin: 10px auto;
-  }
-}
-.nav-list {
-    gap: 15px !important; 
-  }
-
-@media (max-width: 400px) {
-  .brand {
-    font-size: 24px !important;
-  }
-  .greeting {
-    font-size: 14px !important;
   }
 }
