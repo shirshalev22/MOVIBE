@@ -18,6 +18,8 @@ export default function Info() {
   const [user, setUser] = useState(null);
   const [isFav, setIsFav] = useState(false);
 
+  const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
+
   // States ללייקים
   const [meta, setMeta] = useState({ likes: 0, dislikes: 0, myVote: null });
   
@@ -76,7 +78,7 @@ export default function Info() {
     const load = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`https://www.omdbapi.com/?i=${encodeURIComponent(id)}&apikey=5a292f28`);
+        const res = await fetch(`https://www.omdbapi.com/?i=${encodeURIComponent(id)}&apikey=${API_KEY}`);
         const data = await res.json();
         if (data.Response === "True") {
           setMovie(data);

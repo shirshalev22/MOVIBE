@@ -19,6 +19,21 @@ export default function AdminPage({ user }) {
   const [cinemaName, setCinemaName] = useState("");
   const [cinemaLat, setCinemaLat] = useState("");
   const [cinemaLng, setCinemaLng] = useState("");
+  const [cinemaAddress, setCinemaAddress] = useState(""); // שדה חדש לכתובת
+
+  // פונקציה שמנסה להביא כתובת אוטומטית לפי קואורדינטות
+  const fetchAddress = async () => {
+    if (!cinemaLat || !cinemaLng) return;
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${cinemaLat}&lon=${cinemaLng}`);
+      const data = await res.json();
+      if (data.display_name) {
+        setCinemaAddress(data.display_name);
+      }
+    } catch (e) {
+      console.log("Could not fetch address automatically");
+    }
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -44,10 +59,11 @@ export default function AdminPage({ user }) {
     try {
       await addDoc(collection(db, "cinemas"), {
         name: cinemaName,
+        address: cinemaAddress, // שמירת הכתובת ב-DB
         location: new GeoPoint(parseFloat(cinemaLat), parseFloat(cinemaLng)),
         createdAt: serverTimestamp()
       });
-      setCinemaName(""); setCinemaLat(""); setCinemaLng("");
+      setCinemaName(""); setCinemaLat(""); setCinemaLng(""); setCinemaAddress("");
     } catch (e) { alert("Error adding cinema"); }
   };
 
@@ -74,28 +90,34 @@ export default function AdminPage({ user }) {
         System Management
       </h1>
 
-      {/* חלק א': טופס הוספה */}
       <section className="card bg-dark text-white p-4 mb-5 border-secondary shadow-lg">
         <h3 className="mb-4 h5 text-center" style={{ color: "#ffffff", opacity: 0.7 }}>
           Add New Cinema Location
         </h3>
         <form onSubmit={handleAddCinema} className="row g-3 justify-content-center">
-          <div className="col-md-4">
+          <div className="col-md-3">
             <input type="text" className="form-control bg-secondary text-white border-0" placeholder="Cinema Name" value={cinemaName} onChange={(e) => setCinemaName(e.target.value)} required />
           </div>
-          <div className="col-md-3">
-            <input type="number" step="any" className="form-control bg-secondary text-white border-0" placeholder="Latitude" value={cinemaLat} onChange={(e) => setCinemaLat(e.target.value)} required />
+          <div className="col-md-2">
+            <input type="number" step="any" className="form-control bg-secondary text-white border-0" placeholder="Latitude" value={cinemaLat} onChange={(e) => setCinemaLat(e.target.value)} onBlur={fetchAddress} required />
+          </div>
+          <div className="col-md-2">
+            <input type="number" step="any" className="form-control bg-secondary text-white border-0" placeholder="Longitude" value={cinemaLng} onChange={(e) => setCinemaLng(e.target.value)} onBlur={fetchAddress} required />
           </div>
           <div className="col-md-3">
-            <input type="number" step="any" className="form-control bg-secondary text-white border-0" placeholder="Longitude" value={cinemaLng} onChange={(e) => setCinemaLng(e.target.value)} required />
+            <input type="text" className="form-control bg-secondary text-white border-0" placeholder="Street Address" value={cinemaAddress} onChange={(e) => setCinemaAddress(e.target.value)} required />
           </div>
           <div className="col-md-2">
             <button type="submit" className="btn btn-danger w-100 fw-bold">Add</button>
           </div>
+          <div className="col-md-2">
+            <button type="submit" className="btn btn-danger w-100 fw-bold" disabled={loading}>
+              {loading ? "Processing..." : "Add"}
+            </button>
+          </div>
         </form>
       </section>
 
-      {/* חלק ב': ניהול בתי קולנוע */}
       <section className="mb-5">
         <h2 className="mb-4 h4 text-center" style={{ color: "#ffffff", opacity: 0.7, fontWeight: "normal" }}>
           Manage Cinemas
@@ -105,6 +127,7 @@ export default function AdminPage({ user }) {
             <thead>
               <tr className="text-muted text-uppercase" style={{ fontSize: "0.85rem" }}>
                 <th>Cinema Name</th>
+                <th>Address</th>
                 <th>Location (Lat, Lng)</th>
                 <th>Actions</th>
               </tr>
@@ -113,6 +136,9 @@ export default function AdminPage({ user }) {
               {cinemasList.map((c) => (
                 <tr key={c.id} className="border-bottom border-secondary">
                   <td>{c.name}</td>
+                  <td style={{ fontSize: "0.9rem", maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {c.address || "N/A"}
+                  </td>
                   <td>{c.location.latitude.toFixed(3)}, {c.location.longitude.toFixed(3)}</td>
                   <td>
                     <button className="btn btn-outline-danger btn-sm px-3" onClick={() => handleDeleteCinema(c.id)}>
@@ -125,13 +151,10 @@ export default function AdminPage({ user }) {
           </table>
         </div>
       </section>
-
-      <hr className="my-5 opacity-25" />
-
-      {/* חלק ג': טבלת משתמשים */}
+      {/* טבלת משתמשים */}
       <section className="mt-5">
         <h2 className="mb-4 h4 text-center" style={{ color: "#ffffff", opacity: 0.7, fontWeight: "normal" }}>
-          Registered Platform Users
+          Registered Users
         </h2>
         <div className="table-responsive">
           <table className="table table-dark table-hover shadow-sm">

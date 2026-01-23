@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import { useEffect,useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../config/firebase";
 import confetti from 'canvas-confetti';
+
+const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
 
 /**
  * קומפוננטת מודאל ההגרלה (Surprise Me)
@@ -28,13 +30,13 @@ export default function LuckyModal({ isOpen, onClose }) {
       let count = 0;
       const interval = setInterval(() => {
         const randomTempId = allIds[Math.floor(Math.random() * allIds.length)];
-        setRollingPoster(`https://img.omdbapi.com/?i=${randomTempId}&apikey=5a292f28`);
+        setRollingPoster(`https://img.omdbapi.com/?i=${randomTempId}&apikey=${API_KEY}`);
         count++;
-        if (count >= 20) clearInterval(interval);
-      }, 80);
+        if (count >= 5) clearInterval(interval);
+      }, 100);
 
       const finalId = allIds[Math.floor(Math.random() * allIds.length)];
-      const res = await fetch(`https://www.omdbapi.com/?i=${finalId}&apikey=5a292f28`);
+      const res = await fetch(`https://www.omdbapi.com/?i=${finalId}&apikey=${API_KEY}`);
       const data = await res.json();
 
       setTimeout(() => {
@@ -61,20 +63,23 @@ export default function LuckyModal({ isOpen, onClose }) {
   };
 
   // אפקט הפעלה ראשוני כשפותחים את המודאל
-  React.useEffect(() => {
+  useEffect(() => {
     if (isOpen) handleSurpriseMe();
   }, [isOpen]);
 
   if (!isOpen || !luckyMovie) return null;
 
   return (
-    <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.9)', zIndex: 2000 }}>
+    <div className="modal show d-block lucky-modal-overlay">
       <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content text-white p-4 text-center" style={{ background: '#111', borderRadius: '25px', border: '2px solid #e50914', position: 'relative' }}>
+        <div className="modal-content text-white p-4 text-center lucky-modal-content">
           
-          <button onClick={onClose} style={{ position: 'absolute', top: '10px', right: '15px', background: 'none', border: 'none', color: '#fff', fontSize: '28px', cursor: 'pointer' }}>&times;</button>
+          {/* Close button */}
+          <button onClick={onClose} className="lucky-close-btn">
+            &times;
+          </button>
           
-          <h2 className="mb-4" style={{ color: '#e50914', fontWeight: 'bold' }}>
+          <h2 className="mb-4 lucky-title">
             {isSpinning ? "🎰 SHUFFLING..." : "Pick of the Night! 🎉"}
           </h2>
           
@@ -82,14 +87,16 @@ export default function LuckyModal({ isOpen, onClose }) {
             <img 
               src={rollingPoster && rollingPoster !== "N/A" ? rollingPoster : "https://via.placeholder.com/300x450?text=Picking..."} 
               alt="Poster" 
-              style={{ maxHeight: '380px', borderRadius: '15px', border: '3px solid #e50914', boxShadow: isSpinning ? '0 0 10px #fff' : '0 0 25px rgba(229, 9, 20, 0.6)' }} 
+              className={`lucky-poster ${isSpinning ? 'spinning' : 'finished'}`}
             />
-            {!isSpinning && <h3 className="mt-3" style={{ fontSize: '1.5rem' }}>{luckyMovie.Title}</h3>}
+            {!isSpinning && <h3 className="mt-3 lucky-movie-name">{luckyMovie.Title}</h3>}
           </div>
 
           {!isSpinning && (
             <div className="d-flex justify-content-center gap-2 mt-2">
-              <button className="btn-lucky-secondary" onClick={handleSurpriseMe}>Not my vibe 👎</button>
+              <button className="btn-lucky-secondary" onClick={handleSurpriseMe}>
+                Not my vibe 👎
+              </button>
               <button className="btn-lucky-main" onClick={() => { onClose(); navigate(`/info/${luckyMovie.imdbID}`); }}>
                 Yasss! Show me the details 🔥
               </button>

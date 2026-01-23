@@ -34,7 +34,7 @@ export default function MovieCard({
       }
     };
     fetchUserRole();
-  }, [auth.currentUser]);
+  }, [auth.currentUser]); 
 
   // 2. האזנה לתגובות בזמן אמת (Real-time) עבור הסרט הספציפי
   useEffect(() => {

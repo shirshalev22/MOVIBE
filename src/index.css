@@ -508,10 +508,6 @@ a:hover{ color:var(--border); text-decoration:underline; }
   margin: 0;
 }
 
-/* ================================================= */
-/* INFO PAGE ONLY - תוספת לסוף הקובץ בלבד */
-/* ================================================= */
-
 .info-page {
   min-height: 100vh;
   background-color: transparent;
@@ -648,6 +644,257 @@ a:hover{ color:var(--border); text-decoration:underline; }
 
 .close-lucky:hover {
   color: #e50914;
+}
+
+/* פאנל הסינון הראשי */
+.filter-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100vh;
+  background: #111;
+  padding: 20px;
+  border-left: 2px solid #e50914;
+  z-index: 999;
+  overflow-y: auto;
+}
+
+/* כפתור סגירה */
+.filter-close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  float: right;
+  cursor: pointer;
+}
+
+/* כותרות ותוויות */
+.filter-title {
+  color: #e50914;
+  margin-top: 10px;
+}
+
+/* כפתורי ז'אנרים וסינון */
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.filter-btn {
+  padding: 8px;
+  background: #333;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #fff;
+  transition: background 0.2s;
+}
+
+/* מצב פעיל - כשהמשתמש בחר את הכפתור */
+.filter-btn.active {
+  background: #e50914;
+}
+
+.filter-btn-full {
+  width: 100%;
+  margin-bottom: 10px;
+}
+/* מיכל כפתורי המיון */
+.sort-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+/* כפתור מיון אינדיבידואלי */
+.sort-btn {
+  flex: 1;
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.sort-btn.active {
+  background: #e50914;
+}
+
+/* עיצוב כללי לכפתורי הפעולה בתחתית */
+.filter-action-btn {
+  margin-top: 8px;
+  width: 100%;
+}
+
+/* רקע המודאל (השכבה החיצונית) */
+.lucky-modal-overlay {
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 2000;
+}
+
+/* תוכן המודאל - הכרטיס השחור */
+.lucky-modal-content {
+  background: #111;
+  border-radius: 25px;
+  border: 2px solid #e50914;
+  position: relative;
+}
+
+/* כפתור ה-X לסגירה */
+.lucky-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* כותרת המודאל */
+.lucky-title {
+  color: #e50914;
+  font-weight: bold;
+}
+
+/* הפוסטר המסתובב */
+.lucky-poster {
+  max-height: 380px;
+  border-radius: 15px;
+  border: 3px solid #e50914;
+  transition: box-shadow 0.3s ease;
+}
+
+/* צל שונה כשהוא מסתובב/נעצר */
+.lucky-poster.spinning {
+  box-shadow: 0 0 15px #fff;
+}
+
+.lucky-poster.finished {
+  box-shadow: 0 0 25px rgba(229, 9, 20, 0.6);
+}
+
+.lucky-movie-name {
+  font-size: 1.5rem;
+}
+
+.favorites-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem; 
+    justify-content: center;
+}
+
+.favorites-page .movie-card {
+    background: var(--panel) !important;
+    border: 1px solid #e50914 !important;
+    border-radius: 8px;
+    height: 100%;
+}
+
+.favorites-page .card-body-eq {
+    background: var(--panel) !important;
+}
+
+.hide-card-elements .home-comments-list,
+.hide-card-elements .vote-row {
+    display: none !important;
+}
+
+.favorites-page .card-title {
+    white-space: normal !important;
+    overflow: visible !important;
+    font-weight: bold;
+}
+
+/* --- דף יצירת קשר - עיצוב שדות --- */
+
+/* מיכל הטופס - קירוב לכותרת */
+.contact-container {
+    margin-top: -25px !important; 
+}
+
+/* עיצוב שדות הקלט (נושא ותוכן) */
+.contact-form .form-control {
+    background-color: #2b2b2b !important; /* אפור כהה במקום שחור מוחלט */
+    color: white !important; /* טקסט לבן כשכותבים */
+    border: 1px solid #444 !important; /* מסגרת עדינה */
+    border-radius: 8px;
+}
+
+/* צבע הטקסט של ה-Placeholder (הרמז בתוך השדה) */
+.contact-form .form-control::placeholder {
+    color: #999 !important; /* אפור בהיר כדי שיהיה קריא */
+}
+
+/* עיצוב בזמן לחיצה על השדה (Focus) */
+.contact-form .form-control:focus {
+    background-color: #333 !important;
+    border-color: #e50914 !important; /* מסגרת אדומה כשלוחצים */
+    box-shadow: 0 0 0 0.25rem rgba(229, 9, 20, 0.25) !important;
+}
+
+/* ריווח ה-Checkbox מהטקסט */
+.form-check-input {
+    margin-right: 15px !important;
+    cursor: pointer;
+    background-color: #444;
+    border-color: #666;
+}
+
+/* צבע ה-Checkbox כשהוא מסומן */
+.form-check-input:checked {
+    background-color: #e50914 !important;
+    border-color: #e50914 !important;
+}
+
+/* סידור הלינק ב-Header למניעת קו כפול */
+.nav-link {
+    text-decoration: none !important;
+}
+
+.admin-msg-card {
+    background-color: #1f1f1f !important; /* אפור כהה מאוד */
+    border: 1px solid #333 !important;
+    border-left: 4px solid #e50914 !important;
+    border-radius: 8px !important;
+}
+
+.msg-subject {
+    color: #e50914;
+    font-weight: bold;
+}
+
+.msg-sender {
+    color: #bbb;
+    font-size: 0.85rem;
+}
+
+.msg-content {
+    color: #eee;
+}
+
+.msg-footer {
+    border-top: 1px solid #333 !important;
+    color: #666 !important;
+}
+
+.btn-delete-msg {
+    background: transparent !important; /* ללא רקע */
+    border: none !important;
+    color: #ffffff !important; /* ה-X עצמו בלבן */
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+    padding: 0;
 }
 
 /* --- רספונסיביות לטלפונים --- */
@@ -800,4 +1047,8 @@ a:hover{ color:var(--border); text-decoration:underline; }
     padding-top: 10px !important;
     border-top: 1px solid rgba(255,255,255,0.1);
   }
+
+  .favorites-grid {
+        grid-template-columns: 1fr;
+    }
 } 

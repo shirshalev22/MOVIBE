@@ -9,6 +9,8 @@ import Favorites from "./pages/Favorites";
 import Map from "./pages/Map";
 import AdminPage from "./pages/AdminPage";
 import useFavorites from "./hooks/useFavorites";
+import AdminInbox from "./pages/AdminInbox";
+import Contact from "./pages/Contact";
 
 /**
  * מנהלת את מערכת הניתוב (Routing) ואת המבנה הכללי של דפי האתר.
@@ -41,6 +43,7 @@ function App() {
           
           {/* דף מנהל מערכת - מקבל את אובייקט המשתמש לבדיקת הרשאות Admin */}
           <Route path="/admin" element={<AdminPage user={user} />} />
+          <Route path="/contact" element={user?.role === 'admin' ? <AdminInbox /> : <Contact />} />
         </Routes>
       </div>
     </div>

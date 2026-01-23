@@ -87,7 +87,7 @@ export default function Map() {
               <Popup>
                 <div style={{ color: "black", textAlign: "center" }}>
                   <strong style={{ fontSize: "1.1rem" }}>{cinema.name}</strong><br />
-                  <span style={{ color: "#666" }}>Cinema Location</span><br />
+                  <span style={{ color: "#666" }}>{cinema.address}</span><br />
                   <p className="mt-2 mb-0">🍿 Enjoy the movie!</p>
                 </div>
               </Popup>

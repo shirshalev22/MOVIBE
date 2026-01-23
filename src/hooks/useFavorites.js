@@ -21,6 +21,7 @@ export default function useFavorites() {
   const [favs, setFavs] = useState(new Set()); 
   const favsUnsubRef = useRef(null);
 
+  // מאזין בזמן אמת למצב המשתמש ולרשימת המועדפים שלו מול Firebase ומעדכן את האפליקציה בהתאם.
   useEffect(() => {
     const unsubAuth = onAuthStateChanged(auth, async (u) => {
       if (u) {

@@ -25,8 +25,7 @@ export default function Login() {
       await signInWithEmailAndPassword(auth, email.trim(), password);
       navigate("/");
     } catch (err) {
-      // מיפוי שגיאות נפוצות של Firebase לטקסט ידידותי
-      const map = {
+      const map = { //למשפטים למשתמש Firebase שינוי קודי השגיאה של 
         "auth/invalid-credential": "Incorrect email or password.",
         "auth/wrong-password": "Incorrect email or password.",
         "auth/user-not-found": "User not found. Check your email or sign up.",
@@ -43,7 +42,6 @@ export default function Login() {
     <div className="container page-narrow auth-compact">
       <h1 className="mb-4">Login</h1>
 
-      {/* noValidate מבטל את ההודעות הקופצות של כרום */}
       <form onSubmit={onSubmit} noValidate className="vod-card">
         <div className="mb-3">
           <label className="form-label">Email</label>

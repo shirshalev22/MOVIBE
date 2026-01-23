@@ -34,7 +34,7 @@ export default function Home() {
                      "Fantasy", "History", "Horror", "Musical", "Mystery", "Romance", "Sci-Fi", "Thriller", "War", "Western"], []);
 
   // משיכת המפתח מה-env
-  const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
+const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
 
   // ====== סנכרון URL ======
   useEffect(() => {

@@ -29,7 +29,7 @@ export default function useVotes(user, setMovieMeta) {
 
           let likes = movieSnap.exists() ? movieSnap.data().likes || 0 : 0;
           let dislikes = movieSnap.exists() ? movieSnap.data().dislikes || 0 : 0;
-          const currentVoteType = voteSnap.exists() ? voteSnap.data().type : null;
+          const currentVoteType = voteSnap.exists() ? voteSnap.data().type : null; // האם המשתמש הצביע
 
           if (currentVoteType === type) {
             // ביטול הצבעה קיימת (לחיצה נוספת על אותו כפתור)
@@ -57,7 +57,7 @@ export default function useVotes(user, setMovieMeta) {
           }
         });
 
-        // 3. עדכון אופטימי של ה-UI: מעדכן את המצב המקומי מיד בלי לחכות ל-DB
+        // 3. UI מעדכן את המצב המקומי מיד בלי לחכות ל-DB
         if (typeof setMovieMeta === "function") {
           setMovieMeta((prev) => {
             const old = prev?.[imdbID] || { likes: 0, dislikes: 0, myVote: null, genres: [] };

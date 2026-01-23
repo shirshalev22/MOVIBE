@@ -35,14 +35,7 @@ export default function Header() {
               <span>MOVIBE</span>
             </Link>
 
-            <small style={{ 
-              fontSize: '10px', 
-              color: '#cfd3d7', 
-              letterSpacing: '1px',
-              textTransform: 'uppercase',
-              marginTop: '-5px', 
-              paddingLeft: '2px' 
-            }}>
+            <small style={{ fontSize: '10px', color: '#cfd3d7', letterSpacing: '1px',textTransform: 'uppercase',marginTop: '-5px', paddingLeft: '2px' }}>
               The movie to your vibe
             </small>
       
@@ -68,6 +61,9 @@ export default function Header() {
                   </NavLink>
                 </li>
               )}
+              <NavLink to="/contact">
+                {user?.role === 'admin' ? "Inbox" : "Contact Us"}
+              </NavLink>
             </ul>
           </nav>
         </div>

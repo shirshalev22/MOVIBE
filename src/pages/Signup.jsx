@@ -58,7 +58,7 @@ export default function Signup() {
 
       navigate("/");
     } catch (err) {
-      const map = {
+      const map = { //למשפטים למשתמש Firebase תרגום קודי השגיאה של 
         "auth/email-already-in-use": "This email is already in use.",
         "auth/weak-password": "Password should be at least 6 characters.",
         "auth/invalid-email": "Invalid email address.",
