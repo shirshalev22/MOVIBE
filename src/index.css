@@ -861,10 +861,18 @@ a:hover{ color:var(--border); text-decoration:underline; }
 }
 
 .admin-msg-card {
-    background-color: #1f1f1f !important; /* אפור כהה מאוד */
+    background-color: #1f1f1f !important; 
     border: 1px solid #333 !important;
     border-left: 4px solid #e50914 !important;
     border-radius: 8px !important;
+}
+
+.admin-badge {
+  color: #ff4d4d; 
+  font-weight: bold;
+  margin-left: 8px; 
+  font-size: 0.9em;
+  text-transform: uppercase;
 }
 
 .msg-subject {

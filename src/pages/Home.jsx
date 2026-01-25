@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore"; 
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../config/firebase";
 
 import useMovies from "../hooks/useMovies";
@@ -10,7 +10,7 @@ import useVotes from "../hooks/useVotes";
 
 import MovieCard from "../components/MovieCard";
 import FilterPanel from "../components/FilterPanel";
-import LuckyModal from "../components/LuckyModal"; 
+import LuckyModal from "../components/LuckyModal";
 
 export default function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -21,7 +21,7 @@ export default function Home() {
   const { selectedGenres, setSelectedGenres, yearMin, setYearMin, yearMax, setYearMax, likesSort, setLikesSort } = filterTools;
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [isLuckyOpen, setIsLuckyOpen] = useState(false); 
+  const [isLuckyOpen, setIsLuckyOpen] = useState(false);
 
   const { user, favs, toggleFav } = useFavorites();
   const [movieMeta, setMovieMeta] = useState({});
@@ -31,10 +31,10 @@ export default function Home() {
   const [loadingDB, setLoadingDB] = useState(false);
 
   const genreList = useMemo(() => ["Action", "Adventure", "Animation", "Biography", "Comedy", "Crime", "Drama", "Family",
-                     "Fantasy", "History", "Horror", "Musical", "Mystery", "Romance", "Sci-Fi", "Thriller", "War", "Western"], []);
+                       "Fantasy", "History", "Horror", "Musical", "Mystery", "Romance", "Sci-Fi", "Thriller", "War", "Western"], []);
 
   // משיכת המפתח מה-env
-const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
+  const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
 
   // ====== סנכרון URL ======
   useEffect(() => {
@@ -54,7 +54,7 @@ const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
   };
 
   // ====== שליפת סרטים מהמסד לפי ז'אנר (כשאין חיפוש פעיל) ======
-  const genreQueryKey = selectedGenres.join(","); // חילוץ משתנה סטטי כדי ש-ESLint לא יתלונן
+  const genreQueryKey = selectedGenres.join(","); 
 
   useEffect(() => {
     const fetchFromDB = async () => {
@@ -66,7 +66,7 @@ const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
       setLoadingDB(true);
       try {
         const q = query(
-          collection(db, "movies"), 
+          collection(db, "movies"),
           where("genres", "array-contains-any", selectedGenres)
         );
         
@@ -93,7 +93,7 @@ const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
 
     fetchFromDB();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [genreQueryKey, search, API_KEY]); 
+  }, [genreQueryKey, search, API_KEY]);
 
   // ====== לוגיקת סינון ======
   const filteredMovies = useMemo(() => {
@@ -140,11 +140,11 @@ const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
 
         if (movieSnap.exists()) {
           const data = movieSnap.data();
-          updates[id] = { 
-            likes: data.likes || 0, 
-            dislikes: data.dislikes || 0, 
+          updates[id] = {
+            likes: data.likes || 0,
+            dislikes: data.dislikes || 0,
             genres: data.genres || [],
-            myVote: myVote 
+            myVote: myVote
           };
         }
       }));
@@ -155,12 +155,12 @@ const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
     };
     hydrate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rawMovies, dbGenreMovies, user]); 
+  }, [rawMovies, dbGenreMovies, user]);
 
   return (
     <div className="min-vh-100 d-flex flex-column align-items-center">
-      <div 
-        className={`lucky-tab ${!user ? 'btn btn-secondary disabled-tab' : ''}`} 
+      <div
+        className={`lucky-tab ${!user ? 'btn btn-secondary disabled-tab' : ''}`}
         onClick={() => user ? setIsLuckyOpen(true) : alert("Please log in!")}
       >
         <span>SURPRISE ME 🎲</span>
@@ -169,7 +169,7 @@ const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
       <h1 className="my-4">Search Movies</h1>
 
       <div className="d-flex gap-2 mb-4 w-100 px-3" style={{ maxWidth: 720 }}>
-        <input type="text" className="form-control" placeholder="Search..." 
+        <input type="text" className="form-control" placeholder="Search..."
                value={search || ""} onChange={handleSearchInputChange} />
         <button className="btn btn-secondary" onClick={() => setIsFilterOpen(true)} disabled={!user}>
           Filter
@@ -177,26 +177,26 @@ const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
       </div>
 
       <LuckyModal isOpen={isLuckyOpen} onClose={() => setIsLuckyOpen(false)} />
-      <FilterPanel isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} 
-                   genreList={genreList} {...filterTools} 
-                   applyFilters={() => setIsFilterOpen(false)} 
+      <FilterPanel isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)}
+                   genreList={genreList} {...filterTools}
+                   applyFilters={() => setIsFilterOpen(false)}
                    clearFilters={() => {
                      setSelectedGenres([]); setYearMin(1950); setYearMax(2025); setLikesSort("none");
                      setSearchParams({ q: search || "" });
-                   }} 
+                   }}
       />
 
       <div className="container">
         {(loadingDB) && <div className="text-center my-3">Loading Genres...</div>}
         <div className="grid-2">
           {filteredMovies.map(movie => (
-            <MovieCard 
-              key={movie.imdbID} 
-              movie={movie} 
-              meta={movieMeta[movie.imdbID] || { likes: 0, dislikes: 0, myVote: null }} 
-              isFav={favs.has(movie.imdbID)} 
-              onToggleFav={() => toggleFav(movie.imdbID)} 
-              onVote={(type) => handleVote(movie, type)} 
+            <MovieCard
+              key={movie.imdbID}
+              movie={movie}
+              meta={movieMeta[movie.imdbID] || { likes: 0, dislikes: 0, myVote: null }}
+              isFav={favs.has(movie.imdbID)}
+              onToggleFav={() => toggleFav(movie.imdbID)}
+              onVote={(type) => handleVote(movie, type)}
             />
           ))}
         </div>

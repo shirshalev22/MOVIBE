@@ -5,34 +5,44 @@ import useFavorites from '../hooks/useFavorites';
 import { useNavigate } from 'react-router-dom';
 
 export default function Contact() {
+  // --- שליפת מידע על המשתמש מה-Hook הגלובלי ---
   const { user } = useFavorites();
   const navigate = useNavigate();
-  const [subject, setSubject] = useState("");
-  const [content, setContent] = useState("");
-  const [isAnonymous, setIsAnonymous] = useState(false);
-  const [status, setStatus] = useState("");
 
+  // --- States לניהול שדות הטופס ---
+  const [subject, setSubject] = useState(""); // נושא הפנייה
+  const [content, setContent] = useState(""); // תוכן ההודעה
+  const [isAnonymous, setIsAnonymous] = useState(false); // האם המשתמש רוצה להישאר אנונימי
+  const [status, setStatus] = useState(""); // הודעת סטטוס (הצלחה/שגיאה)
+
+  // פונקציה לשליחת ההודעה ל-Firestore
   const sendMessage = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // מניעת רענון הדף בעת שליחת טופס
     try {
-        await addDoc(collection(db, "messages"), {
-            subject,
-            content,
-            sender: isAnonymous ? "Anonymous" : (user?.displayName || user?.email || "User"), 
-            userId: user?.uid,
-            createdAt: serverTimestamp(),
-        });
-        setStatus("Message sent successfully!");
-        setSubject(""); setContent("");
-    } catch (err) { 
-        console.error(err); 
-        setStatus("Error sending message."); 
-    }
-    };
+      // יצירת מסמך חדש בתוך אוסף ההודעות (messages)
+      await addDoc(collection(db, "messages"), {
+        subject,
+        content,
+        // לוגיקה לקביעת זהות השולח:
+        sender: isAnonymous ? "Anonymous" : (user?.displayName || user?.email || "User"), 
+        userId: user?.uid, // שומרים את ה-ID לצרכי מעקב של המנהל
+        createdAt: serverTimestamp(), // חותמת זמן של שרתי גוגל
+      });
 
+      // הצלחה: עדכון המשתמש ואיפוס השדות
+      setStatus("Message sent successfully!");
+      setSubject(""); 
+      setContent("");
+    } catch (err) { 
+      console.error(err); 
+      setStatus("Error sending message."); 
+    }
+  };
+
+  // --- הגנה: אם המשתמש לא מחובר, הוא לא יכול לראות את הטופס ---
   if (!user) {
     return (
-      <div className="container mt-5 text-center text-white p-5 border border-secondary rounded bg-dark">
+      <div className="container mt-5 text-center text-white p-5 border border-secondary rounded bg-dark shadow-lg">
         <h2 className="mb-4">Want to get in touch?</h2>
         <p className="opacity-75 mb-4">Please log in to send reports, suggestions, or requests to the admin.</p>
         <button className="btn btn-danger px-4 fw-bold" onClick={() => navigate("/login")}>
@@ -48,9 +58,10 @@ export default function Contact() {
       <p className="text-center opacity-75 mb-4">Report issues, suggest features, or request changes</p>
       
       <div className="contact-container d-flex justify-content-center">
+        {/* טופס יצירת קשר */}
         <form onSubmit={sendMessage} className="contact-form bg-dark p-4 rounded shadow border border-secondary" style={{ width: "100%", maxWidth: "500px" }}>
           
-          {/* שדה נושא */}
+          {/* שדה נושא - חובה (required) */}
           <div className="mb-3">
             <input 
               type="text"
@@ -62,7 +73,7 @@ export default function Contact() {
             />
           </div>
 
-          {/* שדה תוכן ההודעה */}
+          {/* שדה תוכן ההודעה - חובה */}
           <div className="mb-3">
             <textarea 
               className="form-control" 
@@ -74,7 +85,7 @@ export default function Contact() {
             ></textarea>
           </div>
           
-          {/* בחירת אנונימיות - הריווח מנוהל ב-index.css דרך ה-Class */}
+          {/* אפשרות לשליחה אנונימית */}
           <div className="form-check mb-4 d-flex align-items-center">
             <input 
               type="checkbox" 
@@ -83,13 +94,14 @@ export default function Contact() {
               checked={isAnonymous} 
               onChange={(e) => setIsAnonymous(e.target.checked)} 
             />
-            <label className="form-check-label" htmlFor="anon">
+            <label className="form-check-label ms-2" htmlFor="anon">
               Send as Anonymous
             </label>
           </div>
           
           <button className="btn btn-danger w-100 fw-bold shadow">Send Message</button>
           
+          {/* הודעת סטטוס שמופיעה רק אחרי ניסיון שליחה */}
           {status && <div className="mt-3 small text-center text-info">{status}</div>}
         </form>
       </div>

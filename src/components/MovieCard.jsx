@@ -34,7 +34,7 @@ export default function MovieCard({
       }
     };
     fetchUserRole();
-  }, [auth.currentUser]); 
+  }, []); 
 
   // 2. האזנה לתגובות בזמן אמת (Real-time) עבור הסרט הספציפי
   useEffect(() => {
@@ -78,6 +78,7 @@ export default function MovieCard({
         {movie?.Poster && movie.Poster !== "N/A" ? (
           <img
             src={movie.Poster}
+            alt={movie.Title || "Movie Poster"}
             onError={(e) => { 
               e.target.src = "https://via.placeholder.com/300x450?text=No+Image";
             }} 

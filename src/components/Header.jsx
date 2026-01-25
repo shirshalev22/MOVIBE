@@ -5,18 +5,15 @@ import { signOut } from "firebase/auth";
 import useFavorites from "../hooks/useFavorites";
 
 export default function Header() {
-  // שליפת המשתמש הנוכחי והתפקיד שלו (User/Admin) מתוך ה-Hook
+  // שליפת המשתמש והתפקיד (role) מתוך ה-Hook הגלובלי (context)
   const { user } = useFavorites(); 
   const navigate = useNavigate();
 
-  /**
-   * פונקציה לביצוע התנתקות מהמערכת
-   * משתמשת בשירות ה-Auth של פיירבייס ומפנה לדף ההתחברות
-   */
+  // פונקציית התנתקות
   const doLogout = async () => {
     try {
-      await signOut(auth);
-      navigate("/login");
+      await signOut(auth); // קריאה לפיירבייס לסיים את ה-Session
+      navigate("/login"); // העברה לדף התחברות לאחר הצלחה
     } catch (e) {
       alert("Logout failed, try again.");
     }
@@ -26,51 +23,40 @@ export default function Header() {
     <header className="navbar">
       <div className="header-inner container">
         
-        {/* צד שמאל: לוגו ותפריט ניווט ראשי */}
+        {/* צד שמאל: לוגו וניווט */}
         <div className="left-group">
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-      
-            {/* הלוגו עצמו */}
-            <Link to="/" className="brand" style={{ marginBottom: '0', paddingBottom: '0' }}>
+            <Link to="/" className="brand">
               <span>MOVIBE</span>
             </Link>
-
-            <small style={{ fontSize: '10px', color: '#cfd3d7', letterSpacing: '1px',textTransform: 'uppercase',marginTop: '-5px', paddingLeft: '2px' }}>
-              The movie to your vibe
-            </small>
-      
+            <small className="slogan">The movie to your vibe</small>
           </div>
 
           <nav>
             <ul className="nav-list">
-              <li>
-                <NavLink to="/" end>Home</NavLink>
-              </li>
-              <li>
-                <NavLink to="/favorites">Favorites</NavLink>
-              </li>
-              <li>
-                <NavLink to="/map">Map</NavLink>
-              </li>
+              <li><NavLink to="/" end>Home</NavLink></li>
+              <li><NavLink to="/favorites">Favorites</NavLink></li>
+              <li><NavLink to="/map">Map</NavLink></li>
               
-              {/* אבטחת ממשק: כפתור ניהול שמוצג רק למשתמש עם הרשאת אדמין */}
+              {/* רנדור מותנה: הצגת לינק מנהל רק אם המשתמש הוא admin */}
               {user?.role === "admin" && (
-                <li>
-                  <NavLink to="/admin">
-                    Admin Panel
-                  </NavLink>
-                </li>
+                <li><NavLink to="/admin">Admin Panel</NavLink></li>
               )}
-              <NavLink to="/contact">
-                {user?.role === 'admin' ? "Inbox" : "Contact Us"}
-              </NavLink>
+              
+              {/* שינוי שם הכפתור לפי תפקיד */}
+              <li>
+                <NavLink to="/contact">
+                  {user?.role === 'admin' ? "Inbox" : "Contact Us"}
+                </NavLink>
+              </li>
             </ul>
           </nav>
         </div>
 
-        {/* צד ימין: פרטי משתמש מחובר או כפתורי התחברות */}
+        {/* צד ימין: פרטי המשתמש או כפתורי כניסה */}
         <div className="right-group">
           {user ? (
+            // אם יש משתמש - הצג ברכה וכפתור התנתקות
             <>
               <div className="greeting">
                 Hello, <strong>{user.displayName || user.email || "User"}</strong>
@@ -80,11 +66,10 @@ export default function Header() {
                   </span>
                 )}
               </div>
-              <button className="vod-btn logout-inline" onClick={doLogout}>
-                Logout
-              </button>
+              <button className="vod-btn logout-inline" onClick={doLogout}>Logout</button>
             </>
           ) : (
+            // אם אין משתמש - הצג כפתורי הרשמה וכניסה
             <>
               <NavLink to="/login" className="vod-btn logout-inline">Login</NavLink>
               <NavLink to="/signup" className="vod-btn logout-inline">Sign Up</NavLink>
