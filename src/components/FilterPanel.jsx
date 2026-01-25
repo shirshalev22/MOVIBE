@@ -45,7 +45,6 @@ export default function FilterPanel({
                 : [...selectedGenres, g];
               setSelectedGenres(nextGenres);
             }}
-            // אם הז'אנר נבחר, נוסיף לו קלאס "active" כדי שייצבע באדום/בולט
             className={`filter-btn ${selectedGenres.includes(g) ? "active" : ""}`}
           >
             {g}

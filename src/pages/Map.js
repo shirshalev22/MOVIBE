@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { 
+  MapContainer, // הלוח עליו מצויר המפה
+  TileLayer, // שכבת המפה עצמה
+  Marker, // ה"נעץ" שמצביע על מיקום ספציפי
+  Popup // הבועה הקטנה שנפתחת כשלוחצים על הנעץ
+} from 'react-leaflet';
 import { db } from '../config/firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
 import L from 'leaflet';
@@ -24,7 +29,7 @@ export default function Map() {
   const { user } = useFavorites(); // שימוש ב-Hook כדי לבדוק אם המשתמש מחובר
   const navigate = useNavigate();
 
-  // 1. מאזין בזמן אמת לנתוני בתי הקולנוע ב-Firestore
+  // מאזין בזמן אמת לנתוני בתי הקולנוע ב-Firestore
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "cinemas"), (snapshot) => {
       const cinemaData = snapshot.docs.map(doc => ({
@@ -38,7 +43,7 @@ export default function Map() {
     return () => unsubscribe();
   }, []);
 
-  // 2. הגנת פרטיות: רק משתמשים מחוברים יכולים לראות את המפה
+  // הגנת פרטיות: רק משתמשים מחוברים יכולים לראות את המפה
   if (!user) {
     return (
       <div className="container page-narrow" style={{ color: "white" }}>
@@ -57,13 +62,7 @@ export default function Map() {
     <div className='container text-white text-center mt-4'>
       <h1 style={{ color: "#e50914", margin: "18px 0 16px" }}>Cinema Map</h1>
       <h3 className="mb-4 h5" style={{ opacity: 0.8 }}>Find your favorite cinema near you</h3>
-      
-      {/* מיכל המפה עם עיצוב מותאם (פינות עגולות וצל) */}
-      <div style={{ 
-        borderRadius: "15px", 
-        overflow: "hidden", 
-        border: "2px solid #333",
-        boxShadow: "0 10px 30px rgba(0,0,0,0.5)" 
+      <div style={{ borderRadius: "15px", overflow: "hidden", border: "2px solid #333",boxShadow: "0 10px 30px rgba(0,0,0,0.5)" 
       }}>
         <MapContainer
           center={[32.0853, 34.7818]} // נקודת המרכז של המפה בטעינה ראשונה (תל אביב/מרכז ישראל)

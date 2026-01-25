@@ -8,7 +8,6 @@ export default function AdminInbox() {
 
   // useEffect שמתחיל להאזין להודעות ברגע שהדף נטען
   useEffect(() => {
-    // יצירת מאזין  לאוסף ה-"messages" ב-Firestore
     const unsub = onSnapshot(collection(db, "messages"), (snap) => {
       // הופכים את המסמכים מה-DB למערך של אובייקטים ב-JS
       const msgs = snap.docs.map(d => ({ 
@@ -67,7 +66,7 @@ export default function AdminInbox() {
                 {/* פוטר ההודעה - המרת ה-Timestamp לתאריך ושעה קריאים */}
                 <div className="msg-footer pt-3 mt-auto d-flex justify-content-between">
                   <span>
-                    {/* המרת שניות לפורמט תאריך ישראלי */}
+                    {/* המרת שניות */}
                     {m.createdAt ? new Date(m.createdAt.seconds * 1000).toLocaleDateString('he-IL') : "---"}
                   </span>
                   <span>

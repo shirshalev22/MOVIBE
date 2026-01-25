@@ -40,6 +40,7 @@ export default function MovieCard({
   useEffect(() => {
     if (!movie?.imdbID) return;
 
+    //מיון התגובות מהחדשה לישנה
     const q = query(
       collection(db, "movies", movie.imdbID, "comments"),
       orderBy("createdAt", "desc")
@@ -66,6 +67,7 @@ export default function MovieCard({
     }
   };
 
+  // ניווט לדף המידע
   const handleCardClick = () => {
     const params = new URLSearchParams(filters || {});
     navigate(`/info/${movie.imdbID}?${params.toString()}`);

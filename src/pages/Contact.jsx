@@ -5,7 +5,7 @@ import useFavorites from '../hooks/useFavorites';
 import { useNavigate } from 'react-router-dom';
 
 export default function Contact() {
-  // --- שליפת מידע על המשתמש מה-Hook הגלובלי ---
+  // --- שליפת מידע על המשתמש  ---
   const { user } = useFavorites();
   const navigate = useNavigate();
 

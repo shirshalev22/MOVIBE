@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { auth, db } from "../config/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth"; //בודק האם יש משתמש מחובר
 import { 
   doc, setDoc, deleteDoc, onSnapshot,
   collection, addDoc, query, orderBy, serverTimestamp 
 } from "firebase/firestore";
 import useVotes from "../hooks/useVotes"; 
+import { useFavorites } from '../hooks/useFavorites';
 
 export default function Info() {
   // --- שליפת פרמטרים וניווט ---
@@ -36,7 +37,7 @@ export default function Info() {
   const MAX_CHARS = 100; // הגבלה על אורך התגובה
   const favUnsubRef = useRef(null); // רפרנס לפונקציית הניתוק מהמאזין למועדפים (למניעת זליגת זיכרון)
 
-  // 1. מאזין למצב המשתמש (Auth) ולמועדפים שלו
+  // מאזין למצב המשתמש (Auth) ולמועדפים שלו
   useEffect(() => {
     // onAuthStateChanged בודק בכל רגע אם יש משתמש מחובר
     const unsub = onAuthStateChanged(auth, (u) => {
@@ -56,7 +57,7 @@ export default function Info() {
     return () => { unsub(); if (favUnsubRef.current) favUnsubRef.current(); };
   }, [id]);
 
-  // 2. מאזין בזמן אמת לסטטיסטיקות (לייקים) ולבחירה האישית של המשתמש
+  //מאזין בזמן אמת לסטטיסטיקות (לייקים) ולבחירה האישית של המשתמש
   useEffect(() => {
     if (!id) return;
 
@@ -86,7 +87,7 @@ export default function Info() {
     return () => { movieUnsub(); voteUnsub(); };
   }, [id, user]);
 
-  // 3. טעינת נתוני סרט מה-API החיצוני (OMDb)
+  // טעינת נתוני סרט מה-API החיצוני (OMDb)
   useEffect(() => {
     const load = async () => {
       setLoading(true);
@@ -97,18 +98,19 @@ export default function Info() {
         
         if (data.Response === "True") {
           setMovie(data);
-          // לוגיקה חשובה: שמירת הז'אנרים מה-API בתוך ה-DB שלנו (Firestore)
-          // זה מאפשר לדף הבית לסנן לפי ז'אנר גם בלי לקרוא ל-API
           const genres = data.Genre ? data.Genre.split(",").map(g => g.trim()) : [];
           await setDoc(doc(db, "movies", id), { genres }, { merge: true });
         } else { setError(data.Error); }
-      } catch (err) { setError("Server error"); }
-      finally { setLoading(false); }
+      } catch (err) { 
+        setError("Server error"); 
+      }finally { 
+        setLoading(false); 
+      }
     };
     load();
   }, [id]);
 
-  // 4. מאזין לתגובות של הקהילה בזמן אמת
+  //מאזין לתגובות של הקהילה בזמן אמת
   useEffect(() => {
     if (!id) return;
     // יצירת שאילתה שמביאה את התגובות של הסרט ומסדרת אותן מהחדש לישן
